@@ -1,24 +1,49 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuIndicator,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuViewport,
-} from "@/components/ui/navigation-menu";
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Menu } from "lucide-react";
 import Link from "next/link";
+import React from "react";
+import "./Navbar.scss";
+
+const NAV_ITEMS = [
+  { href: "/", label: "Home" },
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/expenses", label: "Expenses" },
+  { href: "/financial-goals", label: "Financial Goals" },
+  { href: "/freeze", label: "Freeze" },
+  { href: "/add-account", label: "Add Account" },
+];
 
 export function Navbar() {
   return (
-    <NavigationMenu>
-      <NavigationMenuList>
-        <Link href="/sign-in">Sign In</Link>
-      </NavigationMenuList>
-    </NavigationMenu>
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="ghost" size="icon" className="menuButton">
+          <Menu className="menuIcon" />
+          <span className="sr-only">Toggle menu</span>
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="left" className="sheetContent">
+        <SheetHeader>
+          <SheetTitle className="sheetTitle">Menu</SheetTitle>
+        </SheetHeader>
+        <nav className="nav">
+          {NAV_ITEMS.map((item) => (
+            <SheetClose asChild key={item.href}>
+              <Link href={item.href} className="navLink">
+                {item.label}
+              </Link>
+            </SheetClose>
+          ))}
+        </nav>
+      </SheetContent>
+    </Sheet>
   );
 }

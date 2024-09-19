@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 "use client";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,11 +12,11 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import React from "react";
 
-const SignIn = () => {
+const CreateAccount = () => {
   const handleSubmit = (event: { preventDefault: () => void }) => {
     event.preventDefault();
-    // Add your sign-in logic here
-    console.log("Sign-in submitted");
+    // Add your account creation logic here
+    console.log("Account creation submitted");
   };
 
   return (
@@ -25,7 +24,7 @@ const SignIn = () => {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">
-            Sign In
+            Create Account
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -35,7 +34,16 @@ const SignIn = () => {
               <Input
                 id="username"
                 type="text"
-                placeholder="Enter your username"
+                placeholder="Choose a username"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter your email"
                 required
               />
             </div>
@@ -44,23 +52,29 @@ const SignIn = () => {
               <Input
                 id="password"
                 type="password"
-                placeholder="Enter your password"
+                placeholder="Choose a password"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                placeholder="Confirm your password"
                 required
               />
             </div>
             <Button type="submit" variant="outline" className="w-full">
-              Sign In
+              Create Account
             </Button>
           </form>
         </CardContent>
         <CardFooter className="flex justify-center">
           <p className="text-sm text-gray-600">
-            Don't have an account?{" "}
-            <Link
-              href="/create-account"
-              className="text-blue-600 hover:underline"
-            >
-              Create Account
+            Already have an account?{" "}
+            <Link href="/sign-in" className="text-blue-600 hover:underline">
+              Sign In
             </Link>
           </p>
         </CardFooter>
@@ -69,4 +83,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default CreateAccount;
