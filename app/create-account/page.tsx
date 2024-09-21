@@ -9,14 +9,56 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Link from "next/link";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 
 const CreateAccount = () => {
-  const handleSubmit = (event: { preventDefault: () => void }) => {
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  const router = useRouter();
+  const supabase = createClientComponentClient();
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // Add your account creation logic here
-    console.log("Account creation submitted");
+    setError(null);
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            username,
+          },
+        },
+      });
+
+      if (error) throw error;
+
+      // Check if user needs to confirm their email
+      if (data?.user?.identities?.length === 0) {
+        // TODO: Redirect to a "Check your email" page
+        console.log("Please check your email to confirm your account");
+      } else {
+        // Redirect to dashboard or home page
+        router.push("/dashboard");
+      }
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "An unexpected error occurred"
+      );
+    }
   };
 
   return (
@@ -36,6 +78,8 @@ const CreateAccount = () => {
                 type="text"
                 placeholder="Choose a username"
                 required
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -45,6 +89,8 @@ const CreateAccount = () => {
                 type="email"
                 placeholder="Enter your email"
                 required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -54,6 +100,8 @@ const CreateAccount = () => {
                 type="password"
                 placeholder="Choose a password"
                 required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -63,8 +111,11 @@ const CreateAccount = () => {
                 type="password"
                 placeholder="Confirm your password"
                 required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </div>
+            {error && <p className="text-red-500 text-sm">{error}</p>}
             <Button type="submit" variant="outline" className="w-full">
               Create Account
             </Button>
